@@ -1,0 +1,124 @@
+/*
+Theme Name: Cheltuieli
+Theme URI: http://tastaweb.com
+Author: Ghiocelul Salbatic
+Author URI: http://tastaweb.com
+Description: A personal theme to register the cashflow
+Version: 0.1
+Tags: cheltuieli, ghiolcel
+Text Domain: cheltuieli
+
+*/
+body {
+    font-family: Arial;
+}
+.clear{
+    clear: both;
+}
+#wrapper {
+    display: block;
+    width:100%
+    margin:0px auto;
+}
+#header {
+
+}
+.left{
+    float: left;
+}
+.right{
+    float: right;
+}
+.page{
+    width: calc(100% - 350px);
+}
+.sidebar{
+    width: 300px;
+}
+#delimiter {
+    clear: both;
+}
+#footer {
+
+}
+.title {
+    font-size: 11pt;
+    font-family: verdana;
+    font-weight: bold;
+}
+
+#menu-top-menu {
+    background: #444;
+    height: 50px;
+}
+.menu li {
+    display: inline-block;
+}
+
+#menu-top-menu li a {
+    border-right: 1px solid #ccc;
+    color: #fff;
+    line-height: 50px;
+    padding: 0 15px;
+    text-decoration: none;
+}
+
+.datepicker.hasDatepicker {
+    width: 90px;
+}
+.destinatia {
+    width: 200px;
+}
+#wrapper #body .page.left td {
+    font-size: 13px;
+}
+.sum{
+    text-align: right;
+}
+table{
+    border-collapse: collapse;
+    width: 100%;
+}
+table td{
+    padding: 4px;
+}
+
+table th {
+    font-size: 14px;
+    height: 28px;
+    padding: 0 5px;
+}
+#sidebar table{
+    font-size: 12px;
+}
+.keyword,
+.search.categoria,
+.perioada{
+    width: 185px;
+}
+.datepicker.defined.hasDatepicker,
+.categoria,
+.destinatia,
+.beneficiar,
+.amount{
+    width: 100%;
+}
+
+
+#wrapper2 {
+    position:relative;
+    /*width:300px;*/
+    /*height:150px;*/
+}
+canvas {
+    border:1px solid red;
+}
+#tip {
+    background-color:white;
+    border:3px solid green;
+    border-radius: 5px;
+    padding: 5px;
+    position:absolute;
+    left:-200px;
+    top:100px;
+}

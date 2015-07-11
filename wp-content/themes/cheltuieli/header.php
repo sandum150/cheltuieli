@@ -1,0 +1,44 @@
+<html>
+<head>
+    <title>Tutorial theme</title>
+    <link rel="stylesheet" href="<?php bloginfo('stylesheet_url'); ?>">
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
+    <script src="<?php echo get_template_directory_uri() . '/js/jquery-1.11.2.min.js'?>"></script>
+    <script src="<?php echo get_template_directory_uri() . '/js/jquery-ui-1.11.2.custom/jquery-ui.min.js'?>"></script>
+    <script type="text/javascript" src="<?php echo get_template_directory_uri() . '/js/functions.js';?>"></script>
+    <script>
+        ajaxurl = "<?=admin_url('admin-ajax.php');?>";
+        user_id = "<?=get_current_user_id();?>";
+    </script>
+</head>
+<body>
+<div id="wrapper">
+    <div id="header">
+        <h1>HEADER</h1>
+
+        <div class="top-menu">
+            <?php
+            $defaults = array(
+                'theme_location'  => '',
+                'menu'            => '',
+                'container'       => 'div',
+                'container_class' => '',
+                'container_id'    => '',
+                'menu_class'      => 'menu',
+                'menu_id'         => '',
+                'echo'            => true,
+                'fallback_cb'     => 'wp_page_menu',
+                'before'          => '',
+                'after'           => '',
+                'link_before'     => '',
+                'link_after'      => '',
+                'items_wrap'      => '<ul id="%1$s" class="%2$s">%3$s</ul>',
+                'depth'           => 0,
+                'walker'          => ''
+            );
+
+            wp_nav_menu( $defaults );
+            ?>
+        </div>
+    </div>
+    <div id="body">
