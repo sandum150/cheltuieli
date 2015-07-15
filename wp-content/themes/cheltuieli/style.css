@@ -122,3 +122,10 @@ canvas {
     left:-200px;
     top:100px;
 }
+.category_list {
+    float: left;
+    margin-right: 10px;
+    overflow: hidden;
+    white-space: nowrap;
+    width: 250px;
+}

@@ -15,11 +15,11 @@ if (!empty($_POST) && $_POST['date'] != ''){
           'post_type'             => 'cheltuieli',
           'post_title'            => $_POST['destinatia'][$i],
           'post_status'           => 'publish',
-          'post_author'           => 1
+          'post_author'           => get_current_user_id()
       );
       $pid = wp_insert_post( $my_post );
       add_post_meta($pid, 'wpcf-data-cheltuielii', strtotime($_POST['date'][$i]));
-      add_post_meta($pid, 'wpcf-categoria', $_POST['categoria'][$i]);
+      add_post_meta($pid, 'wpcf-categoria-'.get_current_user_id(), $_POST['categoria'][$i]);
       add_post_meta($pid, 'wpcf-beneficiar', $_POST['beneficiar'][$i]);
       add_post_meta($pid, 'wpcf-suma', $_POST['amount'][$i]);
   }
@@ -49,9 +49,9 @@ $custom_fields = get_option( 'wpcf-fields' );
             <td>
                 <select name="categoria[]" class="categoria">
                     <?php
-                    $categorii = $custom_fields['categoria']['data']['options'];
-                    foreach ($categorii as $categorie){
-                        echo '<option value="'.$categorie['value'].'">'.$categorie['title'].'</option>';
+                    $categorii = get_user_option('settings', get_current_user_id());
+                    foreach ($categorii['categories'] as $categorie){
+                        echo '<option value="'.$categorie.'">'.$categorie.'</option>';
                     }
                     ?>
                 </select>

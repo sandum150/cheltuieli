@@ -33,9 +33,9 @@
 <!--                    <select name="categoria" class="search categoria">-->
 <!--                        <option value="0" selected>Selecteaza categoria</option>-->
                         <?php
-                        $categorii = $custom_fields['categoria']['data']['options'];
-                        foreach ($categorii as $categorie){
-                            echo '<input type="checkbox" name="categoria[]" value="'.$categorie['value'].'">'.$categorie['title'].'</option>'."<br/>";
+                        $categorii = get_user_option('settings', get_current_user_id());
+                        foreach ($categorii['categories'] as $categorie){
+                            echo '<input type="checkbox" name="categoria[]" value="'.$categorie.'">'.$categorie.'</option>'."<br/>";
                         }
                         ?>
 <!--                    </select>-->
@@ -45,12 +45,24 @@
         <input type="submit" value="cauta">
     </form>
 
-<!--    <h2 >--><?php //_e('Categories'); ?><!--</h2>-->
-<!--    <ul >-->
-<!--        --><?php //wp_list_categories('sort_column=name&optioncount=1&hierarchical=0'); ?>
-<!--    </ul>-->
-<!--    <h2 >--><?php //_e('Archives'); ?><!--</h2>-->
-<!--    <ul >-->
-<!--        --><?php //wp_get_archives('type=monthly'); ?>
-<!--    </ul>-->
+<?php
+$args = array(
+    'echo'           => true,
+    'redirect' => ( is_ssl() ? 'https://' : 'http://' ) . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'],
+    'form_id'        => 'loginform',
+    'label_username' => __( 'Username' ),
+    'label_password' => __( 'Password' ),
+    'label_remember' => __( 'Remember Me' ),
+    'label_log_in'   => __( 'Log In' ),
+    'id_username'    => 'user_login',
+    'id_password'    => 'user_pass',
+    'id_remember'    => 'rememberme',
+    'id_submit'      => 'wp-submit',
+    'remember'       => true,
+    'value_username' => '',
+    'value_remember' => false
+);
+wp_login_form( $args );
+
+?>
 </div>

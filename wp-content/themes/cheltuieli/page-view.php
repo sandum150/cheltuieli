@@ -72,7 +72,7 @@ $args = array(
         ),
 
         array(
-            'key'       => 'wpcf-categoria',
+            'key'       => 'wpcf-categoria-'.get_current_user_id(),
             'value'     => $value_cat,
             'compare'   => $like_cat
         )
@@ -94,7 +94,7 @@ $the_query = new WP_Query($args);
             $table[$tr]['data_op'] = get_post_field('wpcf-data-cheltuielii', $post->ID);
             $table[$tr]['ora_reg'] = get_the_date('d-m-Y H:i', $post->ID);
             $table[$tr]['destinatia'] = get_the_title();
-            $table[$tr]['categoria'] = types_render_field("categoria", array());
+            $table[$tr]['categoria'] = get_post_meta($post->ID, "wpcf-categoria-".get_current_user_id(), true);
             $table[$tr]['beneficiar'] = types_render_field("beneficiar", array());
             $table[$tr]['suma'] = get_post_field('wpcf-suma', $post->ID);
             $tr++;
