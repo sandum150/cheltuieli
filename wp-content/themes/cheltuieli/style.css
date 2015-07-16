@@ -9,8 +9,10 @@ Tags: cheltuieli, ghiolcel
 Text Domain: cheltuieli
 
 */
-body {
+body, div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6, pre, form, fieldset, input, p, blockquote, table, th, td {
     font-family: Arial;
+    margin: 0;
+    padding: 0;
 }
 .clear{
     clear: both;
@@ -128,4 +130,37 @@ canvas {
     overflow: hidden;
     white-space: nowrap;
     width: 250px;
+}
+#edit_category_form {
+    width: 260px;
+    border: solid 1px #777;
+}
+
+#popup{
+    background: rgba(0, 0, 0, 0.75) none repeat scroll 0 0;
+    height: 100%;
+    overflow-y: scroll;
+    position: fixed;
+    width: 100%;
+    z-index: 20;
+    display: none;
+}
+
+#popup_container {
+    background: #fff none repeat scroll 0 0;
+    margin: 13% auto 0;
+    width: 300px;
+    padding: 30px;
+    text-align: center;
+}
+.button {
+    border: 1px solid #000;
+    display: inline-block;
+    padding: 5px;
+    text-align: center;
+    width: 80px;
+    cursor: pointer;
+}
+.popup p{
+    margin: 10px 0;
 }

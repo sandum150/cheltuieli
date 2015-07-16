@@ -148,14 +148,12 @@ function delete_posts_from_category($category_name){
         )
     );
     $posts_array = get_posts( $args );
-//    echo "<pre>";
-//    var_dump($posts_array);
-//    echo "</pre>";
+
     foreach($posts_array as $post){
         wp_delete_post($post->ID, true);
 //        echo $post->ID;
     }
-    echo count($posts_array);
+//    echo count($posts_array);
 }
 
 function update_user_settings(){
@@ -209,8 +207,24 @@ function update_user_settings(){
 }
 add_action( 'wp_ajax_update_user_settings', 'update_user_settings' );
 // If you wanted to also use the function for non-logged in users (in a theme for example)
-add_action( 'wp_ajax_nopriv_update_user_settings', 'update_user_settings' );
+//add_action( 'wp_ajax_nopriv_update_user_settings', 'update_user_settings' );
 
 
-
-
+function count_posts_from_category(){
+    $args = array(
+        'posts_per_page'   => -1,
+        'post_type'   => 'cheltuieli',
+        'author'	   => '',
+        'post_status'      => 'publish',
+        'meta_query' => array(
+            array(
+                'key' => 'wpcf-categoria-'.get_current_user_id(),
+                'value' => $_REQUEST['category_name'],
+            )
+        )
+    );
+    $posts_array = get_posts( $args );
+    echo count($posts_array);
+die();
+}
+add_action( 'wp_ajax_count_posts_from_category', 'count_posts_from_category' );

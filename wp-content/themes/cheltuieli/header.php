@@ -12,6 +12,16 @@
     </script>
 </head>
 <body>
+<div id="popup">
+    <div id="popup_container">
+        <div id="delete_category" class="popup">
+            <h2> Sunteti sigur?</h2>
+            <p>In categoria "<span id="category_name"></span>" exista <span id="count_categories">0</span> inregistrari. Toate ele vor fi sterse. Stergerea lor ar putea dura cateva minute.</p>
+            <span class="ok button">OK</span>
+            <span class="cancel button">Cancel</span>
+        </div>
+    </div>
+</div>
 <div id="wrapper">
     <div id="header">
         <h1>HEADER</h1>

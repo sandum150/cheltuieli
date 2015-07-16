@@ -133,7 +133,8 @@ $(".add_setting").click(function(){
     });
 })
 
-//delete category
+//  delete category:
+//  1. popup with confirmation
 $(document).on("click", ".delete_category", function(){
     the_action = $(this).attr('the_action');
     key = $(this).attr('key');
@@ -142,7 +143,7 @@ $(document).on("click", ".delete_category", function(){
     $.ajax({
         url: ajaxurl,
         data: {
-            'action':'update_user_settings',
+            'action':'count_posts_from_category',
             'user_id' : user_id,
             'the_action' : the_action,
             'key' : key,
@@ -152,14 +153,49 @@ $(document).on("click", ".delete_category", function(){
         success:function(data) {
             // This outputs the result of the ajax request
             //console.log(data);
-            $("#result").html(data);
+            $("#count_categories").html(data);
+            $("#category_name").html(category);
+            $(".ok.button").attr({
+                category_name: category,
+                key: key
+            });
+            $("#popup, #delete_category").show();
         },
         error: function(errorThrown){
             console.log(errorThrown);
         }
     });
-})
 
+});
+
+//    delete category
+//    2. popup with progress bar
+//    3. delete category with posts
+$(document).on("click", "#delete_category .ok.button", function(){
+    key = $(this).attr("key");
+    category = $(this).attr("category_name");
+    $.ajax({
+            url: ajaxurl,
+            data: {
+                'action':'update_user_settings',
+                'user_id' : user_id,
+                'the_action' : 'delete',
+                'key' : key,
+                'category_name': category
+
+            },
+            success:function(data) {
+                // This outputs the result of the ajax request
+                //console.log(data);
+                $("#result").html(data);
+            },
+            error: function(errorThrown){
+                console.log(errorThrown);
+            }
+        });
+});
+
+//Edit category
 $(document).on("click", ".edit_category", function(){
     place = $(this).prev();
     old_val = place.html();
@@ -209,7 +245,16 @@ $(document).on("click", ".edit_category", function(){
 
 });
 
+$(document).mouseup(function (e)
+{
+    var container = $("#popup_container");
 
+    if (!container.is(e.target) // if the target of the click isn't the container...
+        && container.has(e.target).length === 0) // ... nor a descendant of the container
+    {
+        container.parent().hide();
+    }
+});
 /**
  * Created by sandum on 11.01.2015.
  */
