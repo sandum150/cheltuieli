@@ -133,6 +133,11 @@ $(".add_setting").click(function(){
     });
 })
 
+//    progressbar
+    $("#progressbar").progressbar({
+        value: 0
+    });
+
 //  delete category:
 //  1. popup with confirmation
 $(document).on("click", ".delete_category", function(){
@@ -140,6 +145,7 @@ $(document).on("click", ".delete_category", function(){
     key = $(this).attr('key');
     category = $(this).parent().find(".category_list").html();
     //console.log(category);
+    //progress = 0;
     $.ajax({
         url: ajaxurl,
         data: {
@@ -160,6 +166,8 @@ $(document).on("click", ".delete_category", function(){
                 key: key
             });
             $("#popup, #delete_category").show();
+            //progress = progress + data / 5;
+            $( "#progressbar" ).progressbar( "value", 0 );
         },
         error: function(errorThrown){
             console.log(errorThrown);
@@ -174,6 +182,8 @@ $(document).on("click", ".delete_category", function(){
 $(document).on("click", "#delete_category .ok.button", function(){
     key = $(this).attr("key");
     category = $(this).attr("category_name");
+    count_categories = Number($("#count_categories").html());
+    progress = 0;
     $.ajax({
             url: ajaxurl,
             data: {
@@ -187,7 +197,16 @@ $(document).on("click", "#delete_category .ok.button", function(){
             success:function(data) {
                 // This outputs the result of the ajax request
                 //console.log(data);
-                $("#result").html(data);
+                if(data != ""){
+                    $("#result").html(data);
+                    //console.log(data);
+                    $( "#progressbar" ).progressbar( "value", 100 );
+                }else{
+                    $("#delete_category .ok.button").trigger("click");
+                    //console.log(data);
+                    progress = $("#progressbar").progressbar("value") + 100 / count_categories;
+                    $( "#progressbar" ).progressbar( "value", progress );
+                }
             },
             error: function(errorThrown){
                 console.log(errorThrown);

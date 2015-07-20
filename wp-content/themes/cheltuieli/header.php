@@ -20,6 +20,7 @@
             <span class="ok button">OK</span>
             <span class="cancel button">Cancel</span>
         </div>
+        <div id="progressbar"></div>
     </div>
 </div>
 <div id="wrapper">

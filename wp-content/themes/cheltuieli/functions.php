@@ -114,9 +114,12 @@ add_action( 'wp_ajax_nopriv_example_ajax_request', 'example_ajax_request' );
 function draw_categories(){
     $user_settings = get_user_option('settings', get_current_user_id());
     $categories = $user_settings['categories'];
-    foreach($categories as $key => $category){
-        echo "<p><span class='category_list'>$category</span><span class='edit_category' the_action='edit' key='$key'>Edit </span><span class='delete_category' the_action='delete' key='$key'>Delete</span></p>";
-    }
+    if(count($categories) > 0){
+        foreach($categories as $key => $category){
+            echo "<p><span class='category_list'>$category</span><span class='edit_category' the_action='edit' key='$key'>Edit </span><span class='delete_category' the_action='delete' key='$key'>Delete</span></p>";
+        }
+    }else
+        echo "Nu sunt categorii";
 }
 
 function change_categories_in_postmeta($old_val, $new_val){
@@ -136,7 +139,7 @@ function change_categories_in_postmeta($old_val, $new_val){
 
 function delete_posts_from_category($category_name){
     $args = array(
-        'posts_per_page'   => -1,
+        'posts_per_page'   => 1,
         'post_type'   => 'cheltuieli',
         'author'	   => '',
         'post_status'      => 'publish',
@@ -149,11 +152,16 @@ function delete_posts_from_category($category_name){
     );
     $posts_array = get_posts( $args );
 
+    $count = 0;
     foreach($posts_array as $post){
         wp_delete_post($post->ID, true);
+        $count++;
 //        echo $post->ID;
     }
-//    echo count($posts_array);
+    if($count < 1)
+        return true;
+    else
+        return false;
 }
 
 function update_user_settings(){
@@ -170,25 +178,34 @@ function update_user_settings(){
                 $categories = array();
                 $categories[] .= $_REQUEST['category'];
             }
+            $draw_categories = true;
         }
 
 //        Delete the category from array
         if($_REQUEST['the_action'] == 'delete' && $_REQUEST['key'] != ""){
             $key = $_REQUEST['key'];
             reset($categories);
-            unset($categories[(int)$key]);
+
+            $result = delete_posts_from_category($_REQUEST['category_name']);
+            $draw_categories = $result;
+            if($draw_categories){
+                unset($categories[(int)$key]);
             delete_posts_from_category($_REQUEST['category_name']);
+            }
         }
 
 //        Edit existing category
         if($_REQUEST['the_action'] == 'edit'){
             echo change_categories_in_postmeta($categories[$_REQUEST['key']], $_REQUEST['new_value']);
             $categories[$_REQUEST['key']] = $_REQUEST['new_value'];
+            $draw_categories = true;
         }
 
         $user_settings['categories'] = $categories;
         $result_update = update_user_option(get_current_user_id(), 'settings', $user_settings);
-        draw_categories();
+        if($draw_categories){
+            draw_categories();
+        }
     }else{
 
 //      Creating a new array with settings
