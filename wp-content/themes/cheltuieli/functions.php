@@ -196,7 +196,7 @@ function update_user_settings(){
 
 //        Edit existing category
         if($_REQUEST['the_action'] == 'edit'){
-            echo change_categories_in_postmeta($categories[$_REQUEST['key']], $_REQUEST['new_value']);
+            change_categories_in_postmeta($categories[$_REQUEST['key']], $_REQUEST['new_value']);
             $categories[$_REQUEST['key']] = $_REQUEST['new_value'];
             $draw_categories = true;
         }
