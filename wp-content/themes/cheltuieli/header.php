@@ -2,7 +2,7 @@
 <head>
     <title>Tutorial theme</title>
     <link rel="stylesheet" href="<?php bloginfo('stylesheet_url'); ?>">
-    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.2/themes/smoothness/jquery-ui.css">
+    <link rel="stylesheet" href="<?php echo get_template_directory_uri() . '/css/jquery-ui.css'?>">
     <script src="<?php echo get_template_directory_uri() . '/js/jquery-1.11.2.min.js'?>"></script>
     <script src="<?php echo get_template_directory_uri() . '/js/jquery-ui-1.11.2.custom/jquery-ui.min.js'?>"></script>
     <script type="text/javascript" src="<?php echo get_template_directory_uri() . '/js/functions.js';?>"></script>
