@@ -111,18 +111,18 @@ add_action( 'wp_ajax_example_ajax_request', 'example_ajax_request' );
 // If you wanted to also use the function for non-logged in users (in a theme for example)
 add_action( 'wp_ajax_nopriv_example_ajax_request', 'example_ajax_request' );
 
-function draw_categories(){
+function draw_setting($setting = NULL){
     $user_settings = get_user_option('settings', get_current_user_id());
-    $categories = $user_settings['categories'];
-    if(count($categories) > 0){
-        foreach($categories as $key => $category){
-            echo "<p><span class='category_list'>$category</span><span class='edit_category' the_action='edit' key='$key'>Edit </span><span class='delete_category' the_action='delete' key='$key'>Delete</span></p>";
+    $settings = $user_settings[$setting];
+    if(count($settings) > 0){
+        foreach($settings as $key => $list){
+            echo "<p><span class='settings_list'>$list</span><span class='edit_".$setting."' the_action='edit' key='$key'>Edit </span><span class='delete_setting' the_action='delete' key='$key'>Delete</span></p>";
         }
     }else
-        echo "Nu sunt categorii";
+        echo "Nu sunt inregistrari in setari.";
 }
 
-function change_categories_in_postmeta($old_val, $new_val){
+function change_settings_in_postmeta($setting, $old_val, $new_val){
     global $wpdb;
     $resut = $wpdb->update(
         'wp_postmeta',
@@ -130,14 +130,14 @@ function change_categories_in_postmeta($old_val, $new_val){
             'meta_value' => $new_val
         ),
         array(
-            'meta_key' => 'wpcf-categoria-'.get_current_user_id(),
+            'meta_key' => 'wpcf-'.$setting.'-'.get_current_user_id(),
             'meta_value' => $old_val
         )
     );
     return $resut;
 }
 
-function delete_posts_from_category($category_name){
+function delete_posts_from_category($setting_name, $setting){
     $args = array(
         'posts_per_page'   => 1,
         'post_type'   => 'cheltuieli',
@@ -145,8 +145,8 @@ function delete_posts_from_category($category_name){
         'post_status'      => 'publish',
         'meta_query' => array(
             array(
-                'key' => 'wpcf-categoria-'.get_current_user_id(),
-                'value' => $category_name,
+                'key' => 'wpcf-'.$setting.'-'.get_current_user_id(),
+                'value' => $setting_name,
             )
         )
     );
@@ -169,9 +169,13 @@ function update_user_settings(){
 //    If settings allready exists
     if(!empty($user_settings)) {
         $categories = $user_settings['categories'];
+        $beneficiars = $user_settings['beneficiars'];
 
+        if (!$beneficiars){
+            $beneficiars = array();
+        }
 //        Add new category
-        if($_REQUEST['the_action']=="add"){
+        if($_REQUEST['the_action']=="add" && $_REQUEST['setting']=="category"){
             if (!empty($categories)){
                 $categories[] .= $_REQUEST['category'];
             }else{
@@ -180,42 +184,80 @@ function update_user_settings(){
             }
             $draw_categories = true;
         }
+//        Add new beneficiar
+        if ( $_REQUEST['the_action'] == "add" && $_REQUEST['setting'] == "beneficiars" ){
+            if (!empty($beneficiars)){
+                $beneficiars[] .= $_REQUEST['beneficiar'];
+            }else{
+                $beneficiars = array();
+                $beneficiars[] .= $_REQUEST['beneficiar'];
+            }
+            $draw_beneficiars = true;
+        }
 
 //        Delete the category from array
         if($_REQUEST['the_action'] == 'delete' && $_REQUEST['key'] != ""){
             $key = $_REQUEST['key'];
             reset($categories);
+            reset($beneficiars);
 
-            $result = delete_posts_from_category($_REQUEST['category_name']);
-            $draw_categories = $result;
-            if($draw_categories){
-                unset($categories[(int)$key]);
-            delete_posts_from_category($_REQUEST['category_name']);
+            $result = delete_posts_from_category($_REQUEST['category_name'], $_REQUEST['setting']);
+            if ($_REQUEST['setting'] == "beneficiar"){
+                $draw_beneficiars = $result;
+            }
+            if ($_REQUEST['setting'] == "categoria"){
+                $draw_categories = $result;
+            }
+//            $draw_beneficiars = $_REQUEST['setting'] == "beneficiar"?$result:true;
+//            $draw_categories = $_REQUEST['setting'] == "categoria"?$result:true;
+            if($result){
+                if($_REQUEST['setting'] == 'categoria')
+                    unset($categories[(int)$key]);
+                if($_REQUEST['setting'] == 'beneficiar')
+                    unset($beneficiars[(int)$key]);
+                delete_posts_from_category($_REQUEST['category_name'], $_REQUEST['setting']);
             }
         }
 
 //        Edit existing category
-        if($_REQUEST['the_action'] == 'edit'){
-            echo change_categories_in_postmeta($categories[$_REQUEST['key']], $_REQUEST['new_value']);
+        if($_REQUEST['the_action'] == 'edit' && $_REQUEST['setting'] == 'category'){
+            $setting = $_REQUEST['setting'] == "category" ? "categoria":"beneficiar";
+            change_settings_in_postmeta($setting, $categories[$_REQUEST['key']], $_REQUEST['new_value']);
             $categories[$_REQUEST['key']] = $_REQUEST['new_value'];
             $draw_categories = true;
         }
+//        Edit existing beneficiar
+        if($_REQUEST['the_action'] == 'edit' && $_REQUEST['setting'] == 'beneficiars'){
+            $setting = $_REQUEST['setting'] == "beneficiars" ? "beneficiar":"categoria";
+            change_settings_in_postmeta($setting, $beneficiars[$_REQUEST['key']], $_REQUEST['new_value']);
+            $beneficiars[$_REQUEST['key']] = $_REQUEST['new_value'];
+            $draw_beneficiars = true;
+        }
 
         $user_settings['categories'] = $categories;
+        $user_settings['beneficiars'] = $beneficiars;
         $result_update = update_user_option(get_current_user_id(), 'settings', $user_settings);
-        if($draw_categories){
-            draw_categories();
-        }
+        if($draw_categories)
+            draw_setting("categories");
+        if($draw_beneficiars)
+            draw_setting("beneficiars");
+
     }else{
 
-//      Creating a new array with settings
+//      Initializing user settings
         $categories = Array();
+        $beneficiars = Array();
         if (!empty($_REQUEST['category']))
             $categories[] .= $_REQUEST['category'];
-        $categories[] .= $_REQUEST['category'];
+        if (!empty($_REQUEST['beneficiar']))
+            $beneficiars[] .= $_REQUEST['beneficiar'];
+//        $categories[] .= $_REQUEST['category'];
+//        $beneficiars[] .= $_REQUEST['beneficiar'];
         $user_settings = Array(
-            'categories' => $categories
+            'categories'    => $categories,
+            'beneficiars'   => $beneficiars
         );
+//        create user settings
         $result_update = update_user_option(get_current_user_id(), 'settings', $user_settings);
 
     }
@@ -235,8 +277,8 @@ function count_posts_from_category(){
         'post_status'      => 'publish',
         'meta_query' => array(
             array(
-                'key' => 'wpcf-categoria-'.get_current_user_id(),
-                'value' => $_REQUEST['category_name'],
+                'key' => 'wpcf-'.$_REQUEST['setting'].'-'.get_current_user_id(),
+                'value' => $_REQUEST['setting_name'],
             )
         )
     );

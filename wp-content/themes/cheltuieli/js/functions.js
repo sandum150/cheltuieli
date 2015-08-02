@@ -108,29 +108,44 @@ $( document ).ready(function() {
 
 //add category
 $(".add_setting").click(function(){
-    the_action = $(this).attr('the_action');
-    category = $("input[name='category']").val();
-    key = $(this).attr('key');
-    console.log(key);
+    the_action  = $(this).attr('the_action');
+    category    = $("input[name='category']");
+    beneficiar  = $("input[name='beneficiar']");
+    this_value  = $(this).prev().val();
+    target_html = $(this).parent().next();
 
-    $.ajax({
-        url: ajaxurl,
-        data: {
-            'action':'update_user_settings',
-            'user_id' : user_id,
-            'the_action' : the_action,
-            'category' : category
+    if (this_value == beneficiar.val()){
+        setting = "beneficiars"
+    }
+    if (this_value == category.val()){
+        setting = "category"
+    }
+    //key = $(this).attr('key');
+    //console.log(target_html);
 
-        },
-        success:function(data) {
-            // This outputs the result of the ajax request
-            //console.log(data);
-            $("#result").html(data);
-        },
-        error: function(errorThrown){
-            console.log(errorThrown);
-        }
-    });
+    if (this_value != ""){
+        $.ajax({
+            url: ajaxurl,
+            data: {
+                'action'        : 'update_user_settings',
+                'user_id'       : user_id,
+                'the_action'    : the_action,
+                'category'      : category.val(),
+                'beneficiar'    : beneficiar.val(),
+                'setting'       : setting
+
+            },
+            success:function(data) {
+                //console.log(data);
+                $(target_html).html(data);
+                category.val("");
+                beneficiar.val("");
+            },
+            error: function(errorThrown){
+                console.log(errorThrown);
+            }
+        });
+    }
 })
 
 //    progressbar
@@ -140,31 +155,41 @@ $(".add_setting").click(function(){
 
 //  delete category:
 //  1. popup with confirmation
-$(document).on("click", ".delete_category", function(){
+$(document).on("click", ".delete_setting", function(){
     the_action = $(this).attr('the_action');
     key = $(this).attr('key');
-    category = $(this).parent().find(".category_list").html();
+    setting_name = $(this).parent().find(".settings_list").html();
     //console.log(category);
     //progress = 0;
+
+//  ckeck where we are
+    if ($(this).parent().parent().is("#categories_result")){
+        setting = "categoria";
+    }
+    if ($(this).parent().parent().is("#beneficiar_result")){
+        setting = "beneficiar";
+    }
+
     $.ajax({
         url: ajaxurl,
         data: {
-            'action':'count_posts_from_category',
-            'user_id' : user_id,
-            'the_action' : the_action,
-            'key' : key,
-            'category_name': category
+            'action'        :'count_posts_from_category',
+            'user_id'       : user_id,
+            'the_action'    : the_action,
+            'key'           : key,
+            'setting'       : setting,
+            'setting_name'  : setting_name
 
         },
         success:function(data) {
-            // This outputs the result of the ajax request
             //console.log(data);
             $("#count_categories").html(data);
-            $("#category_name").html(category);
+            $("#category_name").html(setting_name);
             $(".ok.button").attr({
-                category_name: category,
+                category_name: setting_name,
                 key: key
             });
+            $("#setting").attr("name", setting);
             $("#popup, #delete_category").show();
             //progress = progress + data / 5;
             $( "#progressbar" ).progressbar( "value", 0 );
@@ -180,25 +205,32 @@ $(document).on("click", ".delete_category", function(){
 //    2. popup with progress bar
 //    3. delete category with posts
 $(document).on("click", "#delete_category .ok.button", function(){
+    $("#progress_container").show();
+    $("#delete_category").hide();
     key = $(this).attr("key");
     category = $(this).attr("category_name");
+    setting = $("#setting").attr("name");
     count_categories = Number($("#count_categories").html());
     progress = 0;
     $.ajax({
             url: ajaxurl,
             data: {
-                'action':'update_user_settings',
-                'user_id' : user_id,
-                'the_action' : 'delete',
-                'key' : key,
-                'category_name': category
+                'action'        :'update_user_settings',
+                'user_id'       : user_id,
+                'the_action'    : 'delete',
+                'key'           : key,
+                'category_name' : category,
+                'setting'       :setting
 
             },
             success:function(data) {
-                // This outputs the result of the ajax request
                 //console.log(data);
                 if(data != ""){
-                    $("#result").html(data);
+                    if(setting == "beneficiar"){
+                        $("#beneficiar_result").html(data);
+                    }else{
+                        $("#categories_result").html(data);
+                    }
                     //console.log(data);
                     $( "#progressbar" ).progressbar( "value", 100 );
                 }else{
@@ -215,11 +247,20 @@ $(document).on("click", "#delete_category .ok.button", function(){
 });
 
 //Edit category
-$(document).on("click", ".edit_category", function(){
+$(document).on("click", ".edit_categories, .edit_beneficiars", function(){
     place = $(this).prev();
     old_val = place.html();
     key = $(this).attr('key');
-    //console.log(key);
+
+    if($(this).hasClass("edit_categories")){
+        setting = "category";
+        target_html = $("#categories_result");
+    }
+    if ($(this).hasClass("edit_beneficiars")){
+        setting = "beneficiars";
+        target_html = $("#beneficiar_result");
+    }
+    //console.log(setting);
     form = '<input id="edit_category_form" type="text" value="'+old_val+'">';
     place.replaceWith(form);
     new_place = $(this).prev();
@@ -228,7 +269,7 @@ $(document).on("click", ".edit_category", function(){
     new_place[0].setSelectionRange(val_lenght, val_lenght);
     new_place.on("focusout", function(){
         new_val = new_place.val();
-        new_form = "<span class='category_list'>"+ new_val +"</span>";
+        new_form = "<span class='settings_list'>"+ new_val +"</span>";
         //console.log(new_form);
         new_place.replaceWith(new_form);
         if(old_val != new_val){
@@ -237,15 +278,15 @@ $(document).on("click", ".edit_category", function(){
                 url: ajaxurl,
                 data: {
                     'action':'update_user_settings',
-                    'the_action' : 'edit',
-                    'key' : key,
-                    'new_value' : new_val
+                    'the_action': 'edit',
+                    'key'       : key,
+                    'new_value' : new_val,
+                    'setting'   : setting
 
                 },
                 success:function(data) {
-                    // This outputs the result of the ajax request
                     //console.log(data);
-                    $("#result").html(data);
+                    target_html.html(data);
                 },
                 error: function(errorThrown){
                     console.log(errorThrown);
@@ -257,10 +298,6 @@ $(document).on("click", ".edit_category", function(){
     });
 
 })
-
-
-
-
 
 });
 

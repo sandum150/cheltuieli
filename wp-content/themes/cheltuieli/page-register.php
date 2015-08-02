@@ -20,7 +20,7 @@ if (!empty($_POST) && $_POST['date'] != ''){
       $pid = wp_insert_post( $my_post );
       add_post_meta($pid, 'wpcf-data-cheltuielii', strtotime($_POST['date'][$i]));
       add_post_meta($pid, 'wpcf-categoria-'.get_current_user_id(), $_POST['categoria'][$i]);
-      add_post_meta($pid, 'wpcf-beneficiar', $_POST['beneficiar'][$i]);
+      add_post_meta($pid, 'wpcf-beneficiar-'.get_current_user_id(), $_POST['beneficiar'][$i]);
       add_post_meta($pid, 'wpcf-suma', $_POST['amount'][$i]);
   }
 }
@@ -62,9 +62,8 @@ $custom_fields = get_option( 'wpcf-fields' );
             <td>
                 <select name="beneficiar[]" class="beneficiar">
                     <?php
-                    $beneficiari = $custom_fields['beneficiar']['data']['options'];
-                    foreach ($beneficiari as $beneficiar){
-                        echo '<option value="'.$beneficiar['value'].'">'.$beneficiar['title'].'</option>';
+                    foreach ($categorii['beneficiars'] as $categorie){
+                        echo '<option value="'.$categorie.'">'.$categorie.'</option>';
                     }
                     ?>
                 </select>

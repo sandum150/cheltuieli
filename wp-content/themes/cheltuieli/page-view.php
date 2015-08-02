@@ -95,7 +95,7 @@ $the_query = new WP_Query($args);
             $table[$tr]['ora_reg'] = get_the_date('d-m-Y H:i', $post->ID);
             $table[$tr]['destinatia'] = get_the_title();
             $table[$tr]['categoria'] = get_post_meta($post->ID, "wpcf-categoria-".get_current_user_id(), true);
-            $table[$tr]['beneficiar'] = types_render_field("beneficiar", array());
+            $table[$tr]['beneficiar'] = get_post_meta($post->ID, "wpcf-beneficiar-".get_current_user_id(), true);
             $table[$tr]['suma'] = get_post_field('wpcf-suma', $post->ID);
             $tr++;
         }
