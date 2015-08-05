@@ -12,7 +12,7 @@ $field_options = get_option('wpcf-fields');
 
 
 ?>
-
+<div class="left page">
     <form action="post" method="post">
         <label for="add_category">Adauga Categorie</label>
         <input type="text" name="category"/>
@@ -31,13 +31,15 @@ $field_options = get_option('wpcf-fields');
         $user_settings = get_user_option('settings', get_current_user_id());
         ?>
     </div>
-<?php
-$user_settings = get_user_option('settings', get_current_user_id());
+    <?php
+    $user_settings = get_user_option('settings', get_current_user_id());
 
-//echo "<pre>";
-//var_dump($user_settings);
-//echo "</pre>";
-?>
+    //echo "<pre>";
+    //var_dump($user_settings);
+    //echo "</pre>";
+    ?>
+</div>
+
 
 <div class="right sidebar">
 <?php get_sidebar(); ?>

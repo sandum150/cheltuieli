@@ -136,7 +136,7 @@ $(".add_setting").click(function(){
 
             },
             success:function(data) {
-                //console.log(data);
+                console.log(data);
                 $(target_html).html(data);
                 category.val("");
                 beneficiar.val("");
@@ -156,6 +156,7 @@ $(".add_setting").click(function(){
 //  delete category:
 //  1. popup with confirmation
 $(document).on("click", ".delete_setting", function(){
+    $("#progress_container").hide();
     the_action = $(this).attr('the_action');
     key = $(this).attr('key');
     setting_name = $(this).parent().find(".settings_list").html();

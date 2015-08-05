@@ -259,7 +259,9 @@ function update_user_settings(){
         );
 //        create user settings
         $result_update = update_user_option(get_current_user_id(), 'settings', $user_settings);
-
+//        draw_setting("categories");
+//        draw_setting("beneficiars");
+        $_REQUEST['setting'] == "beneficiars"?draw_setting("beneficiars"):draw_setting("categories");
     }
 
     die();
