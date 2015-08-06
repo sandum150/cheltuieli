@@ -1,0 +1,68 @@
+@import url(http://fonts.googleapis.com/css?family=Raleway:300,500,700);
+.restrict_access_body{
+    background-color: #FFB8B8;
+}
+.restrict_access_body .restrict_access_container{
+    position: fixed;
+    width: 340px;
+    top: 50%;
+    left: 50%;
+    margin-top: -140px;
+    margin-left: -170px;
+    background: #fff;
+    /*border: solid 1px #ddd;*/
+}
+
+.restrict_access_body .restrict_access_container form {
+    padding: 15px 50px;
+    text-align: center;
+}
+
+/*.restrict_access_body .restrict_access_container form p,.restrict_access_body .restrict_access_container form p a {
+    font-size: 12px;
+    text-align: center;
+    color: #ffffff;
+    text-transform: uppercase;
+}*/
+.restrict_access_body .restrict_access_container form p.error{
+    color: rgb(218, 169, 169);
+    clear: both;
+    font-size: 14px;
+}
+
+.restrict_access_body .restrict_access_container form a:hover {
+    /*color: #555;*/
+}
+
+.restrict_access_body .restrict_access_container form input[type=text],
+.restrict_access_body .restrict_access_container form input[type=password]{
+    width: calc(100% - 16px);
+    height: 30px;
+    border-left: solid 5px #00CCB1;
+    border-top: none;
+    border-right: none;
+    border-bottom: none;
+    font-style: italic;
+    line-height: 25px;
+    margin-bottom: 10px;
+    padding-top: 5px;
+    padding-left: 10px;
+    font-size: 14px;
+    color: #444;
+    background-color: #eee;
+}
+.restrict_access_body .restrict_access_container form input[type=submit] {
+    border: inherit;
+    border-bottom: solid 5px #00CCB1;
+    background: #eee;
+    margin: 10px auto 20px;
+    padding: 8px 15px 4px;
+    float: right;
+}
+.restrict_access_body p{
+    font-family: Raleway;
+    font-size: 21px;
+    font-weight: 300;
+    text-align: left;
+    color: #FF7A7A;
+}
