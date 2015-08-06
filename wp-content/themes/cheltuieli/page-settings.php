@@ -13,7 +13,7 @@ $field_options = get_option('wpcf-fields');
 
 ?>
 <div class="left page">
-    <form action="post" method="post">
+    <form action="" method="post">
         <label for="add_category">Adauga Categorie</label>
         <input type="text" name="category"/>
         <span id="add_category" class="add_setting" the_action="add">Adauga</span>
@@ -23,16 +23,13 @@ $field_options = get_option('wpcf-fields');
     </div>
     <form action="" method="post">
         <label for="add_beneficiar">Adauga Beneficiar</label>
-        <input type="text" name="beneficiar" />
+        <input  type="text" name="beneficiar" />
         <span id="add_beneficiar" class="add_setting" the_action="add">Adauga</span>
     </form>
     <div id="beneficiar_result">
-        <?php draw_setting("beneficiars");
-        $user_settings = get_user_option('settings', get_current_user_id());
-        ?>
+        <?php draw_setting("beneficiars");?>
     </div>
     <?php
-    $user_settings = get_user_option('settings', get_current_user_id());
 
     //echo "<pre>";
     //var_dump($user_settings);

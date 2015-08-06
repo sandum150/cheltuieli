@@ -109,10 +109,14 @@ $( document ).ready(function() {
 //add category
 $(".add_setting").click(function(){
     the_action  = $(this).attr('the_action');
-    category    = $("input[name='category']");
-    beneficiar  = $("input[name='beneficiar']");
+    category    = $(this).parent().find("input[name='category']");
+    beneficiar  = $(this).parent().find("input[name='beneficiar']");
     this_value  = $(this).prev().val();
     target_html = $(this).parent().next();
+
+    console.log(beneficiar.val());
+    console.log(category.val());
+
 
     if (this_value == beneficiar.val()){
         setting = "beneficiars"
