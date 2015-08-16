@@ -302,7 +302,71 @@ $(document).on("click", ".edit_categories, .edit_beneficiars", function(){
         }
     });
 
-})
+});
+
+
+// editing in front the post
+    $("#transactions td").dblclick(function(){
+        //console.log($(this));
+        th = $('#transactions th').eq($(this).index());
+        if($(this).parent().attr("ch_id") && !$(this).hasClass("editing_cell") && th.attr("field") == 'destinatia'){
+            $(this).addClass("editing_cell");
+            old_val = $(this).html();
+            old_place = $(this);
+            new_html = '<input name="edit_cheltuiala" value="'+old_val+'">';
+            $(this).html(new_html);
+            new_place = $(this).find("input");
+            new_place.focus();
+
+            //set cursor to the end
+            val_lenght = new_place.val().length;
+            new_place[0].setSelectionRange(val_lenght, val_lenght);
+
+            //
+            new_place.on("focusout", catchEvent);
+            new_place.on('keypress', catchEvent);
+        }
+    });
+
+
+//Save new value
+    function catchEvent(e){
+        if(e.type == "focusout" || e.which == 13 || e.keyCode == 13){
+            new_place.attr("disabled", "");
+            if(old_val != $(this).val()){
+                saveCheltuialaField(old_place.parent().attr("ch_id"), th.attr("field"), $(this).val());
+            }else{
+                old_place.html($(this).val());
+                old_place.removeClass("editing_cell");
+            }
+        }
+    }
+
+    function saveCheltuialaField(post_id, field, value){
+        $.ajax({
+            url: ajaxurl,
+            data: {
+                'action'    :'updateCheltualaField',
+                'post_id'   : post_id,
+                'field_name': field,
+                'value'     : value
+            },
+            success:function(data) {
+                old_place.removeClass("editing_cell");
+                old_place.html(data);
+            },
+            error: function(errorThrown){
+                console.log(errorThrown);
+            }
+        });
+    }
+
+
+
+    //$(".editing_cell input").on("focusout", function(){
+    //   console.log($(this).val());
+    //});
+
 
 });
 

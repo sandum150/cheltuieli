@@ -289,3 +289,19 @@ function count_posts_from_category(){
 die();
 }
 add_action( 'wp_ajax_count_posts_from_category', 'count_posts_from_category' );
+
+
+function updateCheltualaField(){
+    if($_REQUEST['field_name'] == 'destinatia'){
+        $args = array(
+            'ID' => $_REQUEST['post_id'],
+            'post_title' => $_REQUEST['value']
+        );
+        wp_update_post($args);
+        echo get_the_title($_REQUEST['post_id']);
+    }else{
+        update_post_meta($_REQUEST['post_id'], 'wpcf-'.$_REQUEST['field_name'], $_REQUEST['value']);
+    }
+    die();
+}
+add_action( 'wp_ajax_updateCheltualaField', 'updateCheltualaField' );

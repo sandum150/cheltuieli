@@ -167,3 +167,9 @@ canvas {
 #progress_container{
     display: none;
 }
+.editing_cell input{
+    border: none;
+}
+.editing_cell{
+    border: solid 3px #cc5057;
+}

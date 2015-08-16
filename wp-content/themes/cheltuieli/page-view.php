@@ -97,6 +97,7 @@ $the_query = new WP_Query($args);
             $table[$tr]['categoria'] = get_post_meta($post->ID, "wpcf-categoria-".get_current_user_id(), true);
             $table[$tr]['beneficiar'] = get_post_meta($post->ID, "wpcf-beneficiar-".get_current_user_id(), true);
             $table[$tr]['suma'] = get_post_field('wpcf-suma', $post->ID);
+            $table[$tr]['ch_id'] =$post->ID;
             $tr++;
         }
 
@@ -105,7 +106,7 @@ $the_query = new WP_Query($args);
 
 //rendering the table
         echo "<table border='1' class='transactions' id='transactions'>";
-        echo "<tr><th>Data tranzactiei</th><th>Data inregistrarii</th><th id='categoria'>Categoria</th><th>Destinatia</th><th>Beneficiar</th><th id='suma'>Suma</th></tr>";
+        echo "<tr><th>Data tranzactiei</th><th>Data inregistrarii</th><th id='categoria'>Categoria</th><th field='destinatia'>Destinatia</th><th>Beneficiar</th><th id='suma'>Suma</th></tr>";
         $i = 0;
         $total_zi = 0;
         $total_sapt = 0;
@@ -120,7 +121,7 @@ $the_query = new WP_Query($args);
 
             foreach ($table as $rows => $cel) {
                 if ($z == $cel['data_op']) {
-                    echo "<tr>
+                    echo "<tr ch_id='".$cel['ch_id']."'>
         <td>" . date('d-m-Y', $cel['data_op']) . ", " . $days[date('w', $cel['data_op'])] . "</td>
         <td>" . $cel["ora_reg"] . "</td>
         <td>" . $cel["categoria"] . "</td>
