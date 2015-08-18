@@ -250,6 +250,9 @@ $(document).on("click", "#delete_category .ok.button", function(){
             }
         });
 });
+$(document).on("click", ".cancel.button", function(){
+    $("#popup").hide();
+});
 
 //Edit category
 $(document).on("click", ".edit_categories, .edit_beneficiars", function(){
@@ -307,43 +310,47 @@ $(document).on("click", ".edit_categories, .edit_beneficiars", function(){
     $("#transactions td").dblclick(function(){
         cell = $(this);
         th = $('#transactions th').eq(cell.index());
-        if(cell.parent().attr("ch_id") &&th.attr("field") && !cell.hasClass("editing_cell")){
+        if(cell.parent().attr("ch_id") && th.attr("field") && !cell.hasClass("editing_cell")){
             cell.addClass("editing_cell");
             old_val = cell.html();
-            switch (th.attr("field")){
-                case "destinatia":
-                    new_html = '<input name="edit_cheltuiala" value="'+old_val+'">';
-                    cell.html(new_html);
-                    new_element = cell.find("input");
-                    new_element.focus();
 
-                    //set cursor to the end
-                    val_lenght = new_element.val().length;
-                    new_element[0].setSelectionRange(val_lenght, val_lenght);
-                    new_element.on('keydown', catchEvent);
-                    new_element.on("focusout", catchEvent);
-                    break;
-                case "beneficiar":
-                    new_html ='<select></select>';
-                    cell.html(new_html);
-                    new_element = cell.find("select");
-                        $.ajax({
-                        url: ajaxurl,
-                        data: {
-                            'action'    :'getSettingList'
-                        },
-                        success:function(data) {
-                            var obj = $.parseJSON(data);
-                            $.each(obj.beneficiars, function(key,value) {
-                                old_val == value ? selected = "selected" : selected = " ";
-                                new_element.append('<option '+ selected +' value="' + value + '">' + value + '</option>');
-                            });
-                            new_element.focus();
-                            new_element.on('keydown', catchEvent);
-                            new_element.on("focusout", catchEvent);
-                        }
-                    });
-                    break;
+            //working with categoria and beneficiar (we need select options)
+            if(th.attr("field") == "beneficiar" || th.attr("field") == "categoria"){
+                new_html ='<select></select>';
+                cell.html(new_html);
+                new_element = cell.find("select");
+                $.ajax({
+                    url: ajaxurl,
+                    data: {
+                        'action'    :'getSettingList'
+                    },
+                    success:function(data) {
+            //draw the select options
+                        var obj = $.parseJSON(data);
+                        th.attr("field") == "beneficiar" ? setting_list = obj.beneficiars : setting_list = obj.categories;
+                        $.each(setting_list, function(key,value) {
+                            old_val == value ? selected = "selected" : selected = " ";
+                            new_element.append('<option '+ selected +' value="' + value + '">' + value + '</option>');
+                        });
+                        new_element.focus();
+            // listening the events
+                        new_element.on('keydown', catchEvent);
+                        new_element.on("focusout", catchEvent);
+                    }
+                });
+            };
+            //working with destinatia
+            if(th.attr("field") == "destinatia" ){
+                new_html = '<input name="edit_cheltuiala" value="'+old_val+'">';
+                cell.html(new_html);
+                new_element = cell.find("input");
+                new_element.focus();
+
+                //set cursor to the end
+                val_lenght = new_element.val().length;
+                new_element[0].setSelectionRange(val_lenght, val_lenght);
+                new_element.on('keydown', catchEvent);
+                new_element.on("focusout", catchEvent);
             }
         }
     });
