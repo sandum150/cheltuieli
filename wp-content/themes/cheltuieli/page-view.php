@@ -106,7 +106,7 @@ $the_query = new WP_Query($args);
 
 //rendering the table
         echo "<table border='1' class='transactions' id='transactions'>";
-        echo "<tr><th>Data tranzactiei</th><th>Data inregistrarii</th><th id='categoria'>Categoria</th><th field='destinatia'>Destinatia</th><th>Beneficiar</th><th id='suma'>Suma</th></tr>";
+        echo "<tr><th>Data tranzactiei</th><th>Data inregistrarii</th><th id='categoria'>Categoria</th><th field='destinatia'>Destinatia</th><th field='beneficiar'>Beneficiar</th><th id='suma'>Suma</th></tr>";
         $i = 0;
         $total_zi = 0;
         $total_sapt = 0;

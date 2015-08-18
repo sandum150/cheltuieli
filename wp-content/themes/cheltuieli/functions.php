@@ -305,3 +305,13 @@ function updateCheltualaField(){
     die();
 }
 add_action( 'wp_ajax_updateCheltualaField', 'updateCheltualaField' );
+
+
+function getSettingList(){
+    $user_settings = get_user_option('settings', get_current_user_id());
+    $settings = $user_settings[$_REQUEST['setting']];
+//    print_r($settings);
+    echo "list";
+    die();
+}
+add_action( 'wp_ajax_getSettingList', 'getSettingList' );

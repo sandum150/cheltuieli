@@ -309,28 +309,77 @@ $(document).on("click", ".edit_categories, .edit_beneficiars", function(){
     $("#transactions td").dblclick(function(){
         //console.log($(this));
         th = $('#transactions th').eq($(this).index());
-        if($(this).parent().attr("ch_id") && !$(this).hasClass("editing_cell") && th.attr("field") == 'destinatia'){
+        if($(this).parent().attr("ch_id") && !$(this).hasClass("editing_cell")){
             $(this).addClass("editing_cell");
             old_val = $(this).html();
             old_place = $(this);
-            new_html = '<input name="edit_cheltuiala" value="'+old_val+'">';
-            $(this).html(new_html);
-            new_place = $(this).find("input");
-            new_place.focus();
+            switch (th.attr("field")){
+                case "destinatia":
+                    new_html = '<input name="edit_cheltuiala" value="'+old_val+'">';
+                    $(this).html(new_html);
+                    new_place = $(this).find("input");
+                    new_place.focus();
 
-            //set cursor to the end
-            val_lenght = new_place.val().length;
-            new_place[0].setSelectionRange(val_lenght, val_lenght);
+                    //set cursor to the end
+                    val_lenght = new_place.val().length;
+                    new_place[0].setSelectionRange(val_lenght, val_lenght);
+                    new_place.on('keydown', catchEvent);
+                    new_place.on("focusout", catchEvent);
+                    break;
+                case "beneficiar":
+                    //new_html = getList(); // poate fi si categories
+                    //$(this).html(new_html);
 
-            //
-            new_place.on("focusout", catchEvent);
-            new_place.on('keypress', catchEvent);
+                    var promise = getSetting();
+                    displayData(promise);
+                        console.log(promise.attr);
+                    //http://jsfiddle.net/jW68r/
+                    //for(var key in promise) {
+                    //    console.log('key: ' + key + '\n' + 'value: ' + promise[key]);
+                    //}
+
+                    new_place = $(this).find("select");
+                    new_place.focus();
+
+                    //set cursor to the end
+                    //val_lenght = new_place.val().length;
+                    //new_place[0].setSelectionRange(val_lenght, val_lenght);
+                    new_place.on('keydown', catchEvent);
+                    new_place.on("focusout", catchEvent);
+                    break;
+            }
         }
     });
 
 
+    function getSetting(){
+        return $.ajax({
+            url: ajaxurl,
+            data: {
+                'action'    :'getSettingList',
+                'setting'   : 'beneficiars'
+            }
+        });
+    }
+
+    function displayData(x) {
+        x.success(function(realData) {
+            //$('#test').text(realData).css({color: 'green'});
+            $(this).html(realData);
+        });
+    }
+
+    //function getList(){
+    //    result = getSetting();
+    //    result.success(function(data){
+    //        return data;
+    //    });
+    //};
+
+
 //Save new value
     function catchEvent(e){
+        //if focus out or press enter
         if(e.type == "focusout" || e.which == 13 || e.keyCode == 13){
             new_place.attr("disabled", "");
             if(old_val != $(this).val()){
@@ -339,6 +388,15 @@ $(document).on("click", ".edit_categories, .edit_beneficiars", function(){
                 old_place.html($(this).val());
                 old_place.removeClass("editing_cell");
             }
+            //console.log("wwwwww");
+        }else{
+            //console.log("key: " + e.keyCode);
+        }
+        //if press ESC we keep the old value
+        if(e.keyCode == 27 || e.which == 27){
+            old_place.removeClass("editing_cell");
+            old_place.html(old_val);
+            //console.log("afafafa");
         }
     }
 
@@ -384,3 +442,8 @@ $(document).mouseup(function (e)
  * Created by sandum on 11.01.2015.
  */
 
+
+
+//$(document).keypress(function(event) {
+//    console.log(event.keyCode);
+//});
