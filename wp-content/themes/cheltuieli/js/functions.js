@@ -297,8 +297,6 @@ $(document).on("click", ".edit_categories, .edit_beneficiars", function(){
                     console.log(errorThrown);
                 }
             });
-        }else{
-            //console.log("is equal");
         }
     });
 
@@ -307,96 +305,70 @@ $(document).on("click", ".edit_categories, .edit_beneficiars", function(){
 
 // editing in front the post
     $("#transactions td").dblclick(function(){
-        //console.log($(this));
-        th = $('#transactions th').eq($(this).index());
-        if($(this).parent().attr("ch_id") && !$(this).hasClass("editing_cell")){
-            $(this).addClass("editing_cell");
-            old_val = $(this).html();
-            old_place = $(this);
+        cell = $(this);
+        th = $('#transactions th').eq(cell.index());
+        if(cell.parent().attr("ch_id") &&th.attr("field") && !cell.hasClass("editing_cell")){
+            cell.addClass("editing_cell");
+            old_val = cell.html();
             switch (th.attr("field")){
                 case "destinatia":
                     new_html = '<input name="edit_cheltuiala" value="'+old_val+'">';
-                    $(this).html(new_html);
-                    new_place = $(this).find("input");
-                    new_place.focus();
+                    cell.html(new_html);
+                    new_element = cell.find("input");
+                    new_element.focus();
 
                     //set cursor to the end
-                    val_lenght = new_place.val().length;
-                    new_place[0].setSelectionRange(val_lenght, val_lenght);
-                    new_place.on('keydown', catchEvent);
-                    new_place.on("focusout", catchEvent);
+                    val_lenght = new_element.val().length;
+                    new_element[0].setSelectionRange(val_lenght, val_lenght);
+                    new_element.on('keydown', catchEvent);
+                    new_element.on("focusout", catchEvent);
                     break;
                 case "beneficiar":
-                    //new_html = getList(); // poate fi si categories
-                    //$(this).html(new_html);
-
-                    var promise = getSetting();
-                    displayData(promise);
-                        console.log(promise.attr);
-                    //http://jsfiddle.net/jW68r/
-                    //for(var key in promise) {
-                    //    console.log('key: ' + key + '\n' + 'value: ' + promise[key]);
-                    //}
-
-                    new_place = $(this).find("select");
-                    new_place.focus();
-
-                    //set cursor to the end
-                    //val_lenght = new_place.val().length;
-                    //new_place[0].setSelectionRange(val_lenght, val_lenght);
-                    new_place.on('keydown', catchEvent);
-                    new_place.on("focusout", catchEvent);
+                    new_html ='<select></select>';
+                    cell.html(new_html);
+                    new_element = cell.find("select");
+                        $.ajax({
+                        url: ajaxurl,
+                        data: {
+                            'action'    :'getSettingList'
+                        },
+                        success:function(data) {
+                            var obj = $.parseJSON(data);
+                            $.each(obj.beneficiars, function(key,value) {
+                                old_val == value ? selected = "selected" : selected = " ";
+                                new_element.append('<option '+ selected +' value="' + value + '">' + value + '</option>');
+                            });
+                            new_element.focus();
+                            new_element.on('keydown', catchEvent);
+                            new_element.on("focusout", catchEvent);
+                        }
+                    });
                     break;
             }
         }
     });
 
 
-    function getSetting(){
-        return $.ajax({
-            url: ajaxurl,
-            data: {
-                'action'    :'getSettingList',
-                'setting'   : 'beneficiars'
-            }
-        });
-    }
 
-    function displayData(x) {
-        x.success(function(realData) {
-            //$('#test').text(realData).css({color: 'green'});
-            $(this).html(realData);
-        });
-    }
-
-    //function getList(){
-    //    result = getSetting();
-    //    result.success(function(data){
-    //        return data;
-    //    });
-    //};
 
 
 //Save new value
     function catchEvent(e){
         //if focus out or press enter
         if(e.type == "focusout" || e.which == 13 || e.keyCode == 13){
-            new_place.attr("disabled", "");
-            if(old_val != $(this).val()){
-                saveCheltuialaField(old_place.parent().attr("ch_id"), th.attr("field"), $(this).val());
+            new_element.attr("disabled", "");
+            if(old_val != new_element.val()){
+                saveCheltuialaField(cell.parent().attr("ch_id"), th.attr("field"), new_element.val());
             }else{
-                old_place.html($(this).val());
-                old_place.removeClass("editing_cell");
+                cell.html($(this).val());
+                cell.removeClass("editing_cell");
             }
-            //console.log("wwwwww");
         }else{
-            //console.log("key: " + e.keyCode);
         }
         //if press ESC we keep the old value
         if(e.keyCode == 27 || e.which == 27){
-            old_place.removeClass("editing_cell");
-            old_place.html(old_val);
-            //console.log("afafafa");
+            cell.removeClass("editing_cell");
+            cell.html(old_val);
         }
     }
 
@@ -410,8 +382,8 @@ $(document).on("click", ".edit_categories, .edit_beneficiars", function(){
                 'value'     : value
             },
             success:function(data) {
-                old_place.removeClass("editing_cell");
-                old_place.html(data);
+                cell.removeClass("editing_cell");
+                cell.html(data);
             },
             error: function(errorThrown){
                 console.log(errorThrown);

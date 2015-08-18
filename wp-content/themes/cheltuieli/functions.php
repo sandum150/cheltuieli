@@ -300,7 +300,9 @@ function updateCheltualaField(){
         wp_update_post($args);
         echo get_the_title($_REQUEST['post_id']);
     }else{
-        update_post_meta($_REQUEST['post_id'], 'wpcf-'.$_REQUEST['field_name'], $_REQUEST['value']);
+        $result = update_post_meta($_REQUEST['post_id'], 'wpcf-'.$_REQUEST['field_name']."-".get_current_user_id(), $_REQUEST['value']);
+        echo get_post_meta( $_REQUEST['post_id'], 'wpcf-'.$_REQUEST['field_name']."-".get_current_user_id(), true );
+
     }
     die();
 }
@@ -309,9 +311,7 @@ add_action( 'wp_ajax_updateCheltualaField', 'updateCheltualaField' );
 
 function getSettingList(){
     $user_settings = get_user_option('settings', get_current_user_id());
-    $settings = $user_settings[$_REQUEST['setting']];
-//    print_r($settings);
-    echo "list";
+    echo json_encode($user_settings);
     die();
 }
 add_action( 'wp_ajax_getSettingList', 'getSettingList' );
