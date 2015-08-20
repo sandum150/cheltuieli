@@ -11,6 +11,8 @@ get_header();
 //var_dump($_POST);
 //echo '</pre>';
 
+$user_id = get_current_user_id();
+
 //arguments for query
 $dela = strtotime($_POST['dela']);
 $panala = strtotime($_POST['panala']);
@@ -56,7 +58,7 @@ if ($_POST['categoria'] == 0){
 }
 $args = array(
     'post_type'  => 'cheltuieli',
-    'meta_key'   => 'wpcf-data-cheltuielii',
+    'meta_key'   => 'wpcf-data-cheltuielii-'.$user_id,
     'orderby'    => 'meta_value_num',
     'order'      => 'asc',
     'posts_per_page'=> -1,
@@ -64,7 +66,7 @@ $args = array(
     'meta_query' => array(
         'realtion' => 'AND',
         array(
-            'key'     => 'wpcf-data-cheltuielii',
+            'key'     => 'wpcf-data-cheltuielii-'.$user_id,
             'compare' => 'BETWEEN',
             'type'    => 'numeric',
             'value'   => Array($dela, $panala)
@@ -72,7 +74,7 @@ $args = array(
         ),
 
         array(
-            'key'       => 'wpcf-categoria-'.get_current_user_id(),
+            'key'       => 'wpcf-categoria-'.$user_id,
             'value'     => $value_cat,
             'compare'   => $like_cat
         )
@@ -86,17 +88,17 @@ $the_query = new WP_Query($args);
     <div class="page left">
 
         <?php
-      // generating an array from wp results
+        // generating an array from wp results
         $table = Array();
         $tr = 0;
         while ($the_query->have_posts()) {
             $the_query->the_post();
-            $table[$tr]['data_op'] = get_post_field('wpcf-data-cheltuielii', $post->ID);
+            $table[$tr]['data_op'] = get_post_field('wpcf-data-cheltuielii-'.$user_id, $post->ID);
             $table[$tr]['ora_reg'] = get_the_date('d-m-Y H:i', $post->ID);
             $table[$tr]['destinatia'] = get_the_title();
-            $table[$tr]['categoria'] = get_post_meta($post->ID, "wpcf-categoria-".get_current_user_id(), true);
-            $table[$tr]['beneficiar'] = get_post_meta($post->ID, "wpcf-beneficiar-".get_current_user_id(), true);
-            $table[$tr]['suma'] = get_post_field('wpcf-suma', $post->ID);
+            $table[$tr]['categoria'] = get_post_meta($post->ID, "wpcf-categoria-".$user_id, true);
+            $table[$tr]['beneficiar'] = get_post_meta($post->ID, "wpcf-beneficiar-".$user_id, true);
+            $table[$tr]['suma'] = get_post_field('wpcf-suma-'.$user_id, $post->ID);
             $table[$tr]['ch_id'] =$post->ID;
             $tr++;
         }
@@ -104,9 +106,9 @@ $the_query = new WP_Query($args);
         /* Restore original Post Data */
         wp_reset_postdata();
 
-//rendering the table
+        //rendering the table
         echo "<table border='1' class='transactions' id='transactions'>";
-        echo "<tr><th>Data tranzactiei</th><th>Data inregistrarii</th><th id='categoria' field='categoria'>Categoria</th><th field='destinatia'>Destinatia</th><th field='beneficiar'>Beneficiar</th><th id='suma'>Suma</th></tr>";
+        echo "<tr><th>Data tranzactiei</th><th>Data inregistrarii</th><th id='categoria' field='categoria'>Categoria</th><th field='destinatia'>Destinatia</th><th field='beneficiar'>Beneficiar</th><th field='suma' id='suma'>Suma</th></tr>";
         $i = 0;
         $total_zi = 0;
         $total_sapt = 0;

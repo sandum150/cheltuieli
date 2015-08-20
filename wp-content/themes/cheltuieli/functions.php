@@ -275,7 +275,7 @@ function count_posts_from_category(){
     $args = array(
         'posts_per_page'   => -1,
         'post_type'   => 'cheltuieli',
-        'author'	   => '',
+        'author'	   => get_current_user_id(),
         'post_status'      => 'publish',
         'meta_query' => array(
             array(
@@ -315,3 +315,49 @@ function getSettingList(){
     die();
 }
 add_action( 'wp_ajax_getSettingList', 'getSettingList' );
+
+
+function updateDatabase(){
+    $user_id = get_current_user_id();
+    $args = array(
+        'posts_per_page'   => -1,
+        'post_type'   => 'cheltuieli',
+        'author'	   => $user_id
+    );
+    $cheltuieli = get_posts($args);
+
+    global $wpdb;
+
+    foreach($cheltuieli as $cheltuiala){
+        $wpdb->update(
+            $wpdb->postmeta,
+            array(
+                'meta_key' => 'wpcf-suma-'.$user_id
+            ),
+            array(
+                'post_id' => $cheltuiala->ID,
+                'meta_key' => 'wpcf-suma'
+            )
+        );
+        $wpdb->update(
+            $wpdb->postmeta,
+            array(
+                'meta_key' => 'wpcf-data-cheltuielii-'.$user_id
+            ),
+            array(
+                'post_id' => $cheltuiala->ID,
+                'meta_key' => 'wpcf-data-cheltuielii'
+            )
+        );
+    }
+
+
+
+//    echo "<pre>";
+//    var_dump($cheltuieli);
+//    echo "</pre>";
+
+
+    die();
+}
+add_action( 'wp_ajax_updateDatabase', 'updateDatabase' );

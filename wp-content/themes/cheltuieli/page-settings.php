@@ -29,6 +29,8 @@ $field_options = get_option('wpcf-fields');
     <div id="beneficiar_result">
         <?php draw_setting("beneficiars");?>
     </div>
+    <p id="database_info">Careva modificari au fost facute in baza de date. Apasati butonul pentru a actualiza</p>
+    <button id="database_update">Actualizeaza</button>
     <?php
 
     //echo "<pre>";

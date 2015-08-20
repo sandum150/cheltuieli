@@ -311,20 +311,23 @@ $(document).on("click", ".edit_categories, .edit_beneficiars", function(){
         cell = $(this);
         th = $('#transactions th').eq(cell.index());
         if(cell.parent().attr("ch_id") && th.attr("field") && !cell.hasClass("editing_cell")){
-            cell.addClass("editing_cell");
+            //cell.addClass("editing_cell");
             old_val = cell.html();
 
             //working with categoria and beneficiar (we need select options)
             if(th.attr("field") == "beneficiar" || th.attr("field") == "categoria"){
-                new_html ='<select></select>';
-                cell.html(new_html);
-                new_element = cell.find("select");
+                //new_html ='<select></select>';
+                //cell.html(new_html);
+                //new_element = cell.find("select");
                 $.ajax({
                     url: ajaxurl,
                     data: {
                         'action'    :'getSettingList'
                     },
                     success:function(data) {
+                        new_html ='<select></select>';
+                        cell.html(new_html);
+                        new_element = cell.find("select");
             //draw the select options
                         var obj = $.parseJSON(data);
                         th.attr("field") == "beneficiar" ? setting_list = obj.beneficiars : setting_list = obj.categories;
@@ -340,7 +343,7 @@ $(document).on("click", ".edit_categories, .edit_beneficiars", function(){
                 });
             };
             //working with destinatia
-            if(th.attr("field") == "destinatia" ){
+            if(th.attr("field") == "destinatia" ||  th.attr("field") == "suma"){
                 new_html = '<input name="edit_cheltuiala" value="'+old_val+'">';
                 cell.html(new_html);
                 new_element = cell.find("input");
@@ -367,7 +370,7 @@ $(document).on("click", ".edit_categories, .edit_beneficiars", function(){
             if(old_val != new_element.val()){
                 saveCheltuialaField(cell.parent().attr("ch_id"), th.attr("field"), new_element.val());
             }else{
-                cell.html($(this).val());
+                cell.text($(this).val());
                 cell.removeClass("editing_cell");
             }
         }else{
@@ -390,7 +393,7 @@ $(document).on("click", ".edit_categories, .edit_beneficiars", function(){
             },
             success:function(data) {
                 cell.removeClass("editing_cell");
-                cell.html(data);
+                cell.text(data);
             },
             error: function(errorThrown){
                 console.log(errorThrown);
@@ -422,7 +425,20 @@ $(document).mouseup(function (e)
  */
 
 
-
-//$(document).keypress(function(event) {
-//    console.log(event.keyCode);
-//});
+//update database
+$(document).ready(function(){
+    $("#database_update").click(function(){
+        $.ajax({
+            url: ajaxurl,
+            data: {
+                'action'    :'updateDatabase'
+            },
+            success:function(data) {
+                $("#database_info").html(data);
+            },
+            error: function(errorThrown){
+                //console.log(errorThrown);
+            }
+        });
+    });
+});
