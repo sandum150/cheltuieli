@@ -291,17 +291,26 @@ die();
 add_action( 'wp_ajax_count_posts_from_category', 'count_posts_from_category' );
 
 
-function updateCheltualaField(){
-    if($_REQUEST['field_name'] == 'destinatia'){
+function updateCheltualaField()
+{
+    if ($_REQUEST['field_name'] == 'destinatia') {
         $args = array(
             'ID' => $_REQUEST['post_id'],
             'post_title' => $_REQUEST['value']
         );
         wp_update_post($args);
         echo get_the_title($_REQUEST['post_id']);
-    }else{
-        $result = update_post_meta($_REQUEST['post_id'], 'wpcf-'.$_REQUEST['field_name']."-".get_current_user_id(), $_REQUEST['value']);
-        echo get_post_meta( $_REQUEST['post_id'], 'wpcf-'.$_REQUEST['field_name']."-".get_current_user_id(), true );
+    } elseif ($_REQUEST['field_name'] == 'data') {
+//        updating date;
+        $result = update_post_meta($_REQUEST['post_id'], 'wpcf-data-cheltuielii-' . get_current_user_id(), strtotime($_REQUEST['value']));
+        $date_timestamp = get_post_meta($_REQUEST['post_id'], 'wpcf-data-cheltuielii-' . get_current_user_id(), true);
+
+        $week_days = array('Duminica', 'Luni', 'Marti', 'Miercuri', 'Joi', 'Vineri', 'Sambata');
+
+        echo date('d-m-Y', $date_timestamp) . ', ' . $week_days[date('w' , $date_timestamp)] ;
+    } else {
+        $result = update_post_meta($_REQUEST['post_id'], 'wpcf-' . $_REQUEST['field_name'] . "-" . get_current_user_id(), $_REQUEST['value']);
+        echo get_post_meta($_REQUEST['post_id'], 'wpcf-' . $_REQUEST['field_name'] . "-" . get_current_user_id(), true);
 
     }
     die();

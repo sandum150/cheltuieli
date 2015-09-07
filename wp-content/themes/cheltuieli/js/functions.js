@@ -114,18 +114,12 @@ $(".add_setting").click(function(){
     this_value  = $(this).prev().val();
     target_html = $(this).parent().next();
 
-    console.log(beneficiar.val());
-    console.log(category.val());
-
-
     if (this_value == beneficiar.val()){
         setting = "beneficiars"
     }
     if (this_value == category.val()){
         setting = "category"
     }
-    //key = $(this).attr('key');
-    //console.log(target_html);
 
     if (this_value != ""){
         $.ajax({
@@ -164,8 +158,7 @@ $(document).on("click", ".delete_setting", function(){
     the_action = $(this).attr('the_action');
     key = $(this).attr('key');
     setting_name = $(this).parent().find(".settings_list").html();
-    //console.log(category);
-    //progress = 0;
+
 
 //  ckeck where we are
     if ($(this).parent().parent().is("#categories_result")){
@@ -229,18 +222,15 @@ $(document).on("click", "#delete_category .ok.button", function(){
 
             },
             success:function(data) {
-                //console.log(data);
                 if(data != ""){
                     if(setting == "beneficiar"){
                         $("#beneficiar_result").html(data);
                     }else{
                         $("#categories_result").html(data);
                     }
-                    //console.log(data);
                     $( "#progressbar" ).progressbar( "value", 100 );
                 }else{
                     $("#delete_category .ok.button").trigger("click");
-                    //console.log(data);
                     progress = $("#progressbar").progressbar("value") + 100 / count_categories;
                     $( "#progressbar" ).progressbar( "value", progress );
                 }
@@ -257,6 +247,7 @@ $(document).on("click", ".cancel.button", function(){
 //Edit category
 $(document).on("click", ".edit_categories, .edit_beneficiars", function(){
     place = $(this).prev();
+    old_text = place.html();
     old_val = place.html();
     key = $(this).attr('key');
 
@@ -268,7 +259,6 @@ $(document).on("click", ".edit_categories, .edit_beneficiars", function(){
         setting = "beneficiars";
         target_html = $("#beneficiar_result");
     }
-    //console.log(setting);
     form = '<input id="edit_category_form" type="text" value="'+old_val+'">';
     place.replaceWith(form);
     new_place = $(this).prev();
@@ -278,10 +268,8 @@ $(document).on("click", ".edit_categories, .edit_beneficiars", function(){
     new_place.on("focusout", function(){
         new_val = new_place.val();
         new_form = "<span class='settings_list'>"+ new_val +"</span>";
-        //console.log(new_form);
         new_place.replaceWith(new_form);
         if(old_val != new_val){
-            //console.log(key);
             $.ajax({
                 url: ajaxurl,
                 data: {
@@ -293,7 +281,6 @@ $(document).on("click", ".edit_categories, .edit_beneficiars", function(){
 
                 },
                 success:function(data) {
-                    //console.log(data);
                     target_html.html(data);
                 },
                 error: function(errorThrown){
@@ -312,13 +299,12 @@ $(document).on("click", ".edit_categories, .edit_beneficiars", function(){
         th = $('#transactions th').eq(cell.index());
         if(cell.parent().attr("ch_id") && th.attr("field") && !cell.hasClass("editing_cell")){
             //cell.addClass("editing_cell");
+            old_text = cell.html();
             old_val = cell.html();
 
             //working with categoria and beneficiar (we need select options)
             if(th.attr("field") == "beneficiar" || th.attr("field") == "categoria"){
-                //new_html ='<select></select>';
-                //cell.html(new_html);
-                //new_element = cell.find("select");
+
                 $.ajax({
                     url: ajaxurl,
                     data: {
@@ -354,6 +340,28 @@ $(document).on("click", ".edit_categories, .edit_beneficiars", function(){
                 new_element[0].setSelectionRange(val_lenght, val_lenght);
                 new_element.on('keydown', catchEvent);
                 new_element.on("focusout", catchEvent);
+            };
+            if(th.attr('field') == 'data'){
+                old_text = cell.text();
+                old_val = cell.text();
+                old_val = old_val.substring(0, old_val.indexOf(','));
+
+                new_html = '<input type="text" name="dataop" value="'+old_val+'">';
+                cell.html(new_html);
+                options_data = {
+                    dateFormat:     'dd-mm-yy ',
+                    firstDay:       1,
+                    onSelect: function(e){
+                        saveCheltuialaField(cell.parent().attr("ch_id"), th.attr("field"), e);
+                    },
+                    onClose: function(e){
+                        cell.text(old_text);
+                        cell.removeClass("editing_cell");
+                    }
+                };
+                new_element = cell.find('input');
+                new_element.datepicker(options_data);
+                new_element.datepicker('show');
             }
         }
     });
@@ -361,24 +369,24 @@ $(document).on("click", ".edit_categories, .edit_beneficiars", function(){
 
 
 
-
 //Save new value
     function catchEvent(e){
         //if focus out or press enter
-        if(e.type == "focusout" || e.which == 13 || e.keyCode == 13){
+        if(e.type == "change" || e.type == "focusout" || e.which == 13 || e.keyCode == 13){
             new_element.attr("disabled", "");
             if(old_val != new_element.val()){
                 saveCheltuialaField(cell.parent().attr("ch_id"), th.attr("field"), new_element.val());
             }else{
-                cell.text($(this).val());
+                cell.text(old_text);
                 cell.removeClass("editing_cell");
             }
         }else{
+
         }
         //if press ESC we keep the old value
         if(e.keyCode == 27 || e.which == 27){
             cell.removeClass("editing_cell");
-            cell.html(old_val);
+            cell.html(old_text);
         }
     }
 
@@ -402,10 +410,6 @@ $(document).on("click", ".edit_categories, .edit_beneficiars", function(){
     }
 
 
-
-    //$(".editing_cell input").on("focusout", function(){
-    //   console.log($(this).val());
-    //});
 
 
 });
@@ -437,7 +441,6 @@ $(document).ready(function(){
                 $("#database_info").html(data);
             },
             error: function(errorThrown){
-                //console.log(errorThrown);
             }
         });
     });

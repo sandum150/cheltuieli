@@ -108,7 +108,7 @@ $the_query = new WP_Query($args);
 
         //rendering the table
         echo "<table border='1' class='transactions' id='transactions'>";
-        echo "<tr><th>Data tranzactiei</th><th>Data inregistrarii</th><th id='categoria' field='categoria'>Categoria</th><th field='destinatia'>Destinatia</th><th field='beneficiar'>Beneficiar</th><th field='suma' id='suma'>Suma</th></tr>";
+        echo "<tr><th field='data'>Data tranzactiei</th><!--<th>Data inregistrarii</th>--><th id='categoria' field='categoria'>Categoria</th><th field='destinatia'>Destinatia</th><th field='beneficiar'>Beneficiar</th><th field='suma' id='suma'>Suma</th></tr>";
         $i = 0;
         $total_zi = 0;
         $total_sapt = 0;
@@ -125,7 +125,7 @@ $the_query = new WP_Query($args);
                 if ($z == $cel['data_op']) {
                     echo "<tr ch_id='".$cel['ch_id']."'>
         <td>" . date('d-m-Y', $cel['data_op']) . ", " . $days[date('w', $cel['data_op'])] . "</td>
-        <td>" . $cel["ora_reg"] . "</td>
+        "./*$cel["ora_reg"]*/ "
         <td>" . $cel["categoria"] . "</td>
         <td>" . $cel["destinatia"] . "</td>
         <td>" . $cel["beneficiar"] . "</td>
@@ -135,7 +135,7 @@ $the_query = new WP_Query($args);
                     if (date('d', $table[$i]['data_op']) !== date('d', $table[$i - 1]['data_op']) || !$table[$i]['data_op']) {
                         $total_zi = $total_zi + $cel['suma'];
                         $total_perioada = $total_perioada + $cel['suma'];
-                        echo "<tr style='background: #ddd;'><td colspan='5'><b><i>Total pe ziua " . date('d-m-Y', $cel['data_op']) . "</i></b></td><td class='sum'><b><i>" . number_format($total_zi, 2, '.', ' ') . "</i></b></td></tr>";
+                        echo "<tr style='background: #ddd;'><td colspan='4'><b><i>Total pe ziua " . date('d-m-Y', $cel['data_op']) . "</i></b></td><td class='sum'><b><i>" . number_format($total_zi, 2, '.', ' ') . "</i></b></td></tr>";
                         $total_sapt = $total_sapt + $total_zi;
                         $total_zi = 0;
                     } else {
@@ -146,11 +146,11 @@ $the_query = new WP_Query($args);
 
             }
             if (date('w', $z) == '0' && !$total_sapt == 0 || $z == $last_day) {
-                echo "<tr style='background: #FFC9FD'><td colspan='5'><b><i>Total saptamanal</i></b></td><td class='sum'><b><i>" . number_format($total_sapt, 2, '.', ' ') . "</i></b></td></tr>";
+                echo "<tr style='background: #FFC9FD'><td colspan='4'><b><i>Total saptamanal</i></b></td><td class='sum'><b><i>" . number_format($total_sapt, 2, '.', ' ') . "</i></b></td></tr>";
                 $total_sapt = 0;
             }
         }
-        echo "<tr style='background: #98D9BF'><td colspan='5'><b><i>Total perioada</i></b></td><td class='sum'><b><i>" . number_format($total_perioada, 2, '.', ' ') . "</i></b></td></tr>";
+        echo "<tr style='background: #98D9BF'><td colspan='4'><b><i>Total perioada</i></b></td><td class='sum'><b><i>" . number_format($total_perioada, 2, '.', ' ') . "</i></b></td></tr>";
         echo "</table>";
         ?>
     </div>
