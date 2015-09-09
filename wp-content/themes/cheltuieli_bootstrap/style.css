@@ -1,0 +1,35 @@
+/*
+Theme Name: Cheltuieli Bootstrap
+Theme URI: http://tastaweb.com
+Author: Ghiocelul Salbatic
+Author URI: http://tastaweb.com
+Description: A personal theme to register the cashflow
+Version: 0.1
+Tags: cheltuieli, ghiolcel
+Text Domain: cheltuieli
+
+*/
+
+
+#popup{
+    display: none;
+}
+.sum{
+    text-align: right;
+}
+.sum input{
+    text-align: right;
+}
+
+#body{
+    /*max-width: 1000px;*/
+    margin: 0 auto;
+}
+
+#footer{
+    float: left;
+    width: 100%;
+}
+#footer .well{
+    text-align: center;
+}
