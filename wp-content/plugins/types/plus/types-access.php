@@ -2,15 +2,10 @@
 /*
  * Types Access teaser.
  *
- * $HeadURL: http://plugins.svn.wordpress.org/types/tags/1.6.5/plus/types-access.php $
- * $LastChangedDate: 2015-02-04 13:43:06 +0000 (Wed, 04 Feb 2015) $
- * $LastChangedRevision: 1082328 $
- * $LastChangedBy: iworks $
  *
  */
 
 add_action( 'plugins_loaded', 'wpcf_access_teaser_init', 15 );
-add_action( 'wpcf_menu_plus', 'wpcf_access_teaser_admin_menu' );
 
 /**
  * Teaser init.
@@ -32,6 +27,7 @@ function wpcf_access_teaser_init() {
         $locale = get_locale();
         load_textdomain( 'wpcf_access',
                 WPCF_ACCESS_ABSPATH . '/locale/types-access-' . $locale . '.mo' );
+        add_action( 'wpcf_menu_plus', 'wpcf_access_teaser_admin_menu' );
     }
 }
 
@@ -39,15 +35,19 @@ function wpcf_access_teaser_init() {
  * Teaser menu hook.
  */
 function wpcf_access_teaser_admin_menu() {
-    $hook = wpcf_admin_add_submenu_page(
-        array(
-            'page_title' => __( 'Access Control and User Roles', 'wpcf' ),
-            'menu_title' => __( 'Access Control and User Roles', 'wpcf' ),
-            'menu_slug' => 'wpcf-access',
-            'function' => 'wpcf_access_teaser_admin_menu_page',
-            'load_hook' => 'wpcf_access_teaser_admin_menu_load',
-        )
-    );
+    if (
+        isset( $_GET['page'] ) 
+        && 'wpcf-access' == $_GET['page']
+    ) {
+        $hook = wpcf_admin_add_submenu_page(
+            array(
+                'menu_title' => __( 'Access', 'wpcf' ),
+                'menu_slug' => 'wpcf-access',
+                'function' => 'wpcf_access_teaser_admin_menu_page',
+                'load_hook' => 'wpcf_access_teaser_admin_menu_load',
+            )
+        );
+    }
 }
 
 /**
@@ -80,7 +80,7 @@ function wpcf_access_teaser_admin_menu_page()
     /**
      * show message
      */
-    echo wpcf_add_admin_header( __( 'Access', 'wpcf' ), 'icon-wpcf-access' );
+    wpcf_add_admin_header( __( 'Access', 'wpcf' ), 'icon-wpcf-access' );
     echo '<div class="types-help"><div class="types-help-content"';
     echo '<p>' . sprintf(__( 'This screen shows a preview of %sAccess%s - the access control and roles management addon for Types.',
             'wpcf' ), '<strong><a href="http://wp-types.com/home/types-access/?utm_source=typesplugin&utm_medium=accessadmin&utm_term=Access&utm_campaign=typesplugin" target="_blank">','</a></strong>')
@@ -91,10 +91,10 @@ function wpcf_access_teaser_admin_menu_page()
                       '</a></strong>')
     . '</p>'
     . '<p><a href="http://wp-types.com/home/types-access/?utm_source=typesplugin&utm_medium=accessadmin&utm_term=AccessFeatures&utm_campaign=typesplugin" class="button-primary" target="_blank">'
-    . sprintf(__( 'Access Features' ) . '</a>&nbsp;<a href="%s" class="button-primary" target="_blank">', $access_buy_link )
-    . __( 'Buy Access - $39 (USD)' ) . '</a>' . '</p>';
+    . sprintf(__( 'Access Features', 'wpcf' ) . '</a>&nbsp;<a href="%s" class="button-primary" target="_blank">', $access_buy_link )
+    . __( 'Buy Access - $39 (USD)', 'wpcf' ) . '</a>' . '</p>';
     echo '</div></div>';
     require_once WPCF_ACCESS_INC . '/admin-edit-access.php';
     wpcf_access_admin_edit_access( false );
-    echo wpcf_add_admin_footer();
+    wpcf_add_admin_footer();
 }

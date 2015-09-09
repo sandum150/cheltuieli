@@ -304,7 +304,16 @@ $(document).on("click", ".edit_categories, .edit_beneficiars", function(){
 
 
 // editing in front the post
-    $("#transactions td").dblclick(function(){
+
+    //for desktop
+    $("#transactions td").on('dblclick', doubleClick);
+    //for mobile:
+    //$("#transactions td").on('swipe', function(){
+    //    alert(1);
+    //});
+
+
+    function doubleClick(){
         cell = $(this);
         th = $('#transactions th').eq(cell.index());
         if(cell.parent().attr("ch_id") && th.attr("field") && !cell.hasClass("editing_cell")){
@@ -324,7 +333,7 @@ $(document).on("click", ".edit_categories, .edit_beneficiars", function(){
                         new_html ='<select class="form-control"></select>';
                         cell.html(new_html);
                         new_element = cell.find("select");
-            //draw the select options
+                        //draw the select options
                         var obj = $.parseJSON(data);
                         th.attr("field") == "beneficiar" ? setting_list = obj.beneficiars : setting_list = obj.categories;
                         $.each(setting_list, function(key,value) {
@@ -332,7 +341,7 @@ $(document).on("click", ".edit_categories, .edit_beneficiars", function(){
                             new_element.append('<option '+ selected +' value="' + value + '">' + value + '</option>');
                         });
                         new_element.focus();
-            // listening the events
+                        // listening the events
                         new_element.on('keydown', catchEvent);
                         new_element.on("focusout", catchEvent);
                     }
@@ -374,7 +383,7 @@ $(document).on("click", ".edit_categories, .edit_beneficiars", function(){
                 new_element.datepicker('show');
             }
         }
-    });
+    }
 
 
 

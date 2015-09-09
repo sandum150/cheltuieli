@@ -18,15 +18,15 @@ $field_options = get_option('wpcf-fields');
 
         <!-- Nav tabs -->
         <ul class="nav nav-tabs" role="tablist">
-            <li role="presentation"><a href="#categorii" aria-controls="categorii" role="tab" data-toggle="tab">Categorii</a></li>
-            <li role="presentation" class="active"><a href="#beneficiari" aria-controls="beneficiari" role="tab" data-toggle="tab">Beneficiari</a></li>
+            <li role="presentation" class="active"><a href="#categorii" aria-controls="categorii" role="tab" data-toggle="tab">Categorii</a></li>
+            <li role="presentation" ><a href="#beneficiari" aria-controls="beneficiari" role="tab" data-toggle="tab">Beneficiari</a></li>
             <li role="presentation"><a href="#update" aria-controls="Update" role="tab" data-toggle="tab">Update</a></li>
         </ul>
 
         <!-- Tab panes -->
         <div class="tab-content">
 
-            <div role="tabpanel" class="tab-pane" id="categorii">
+            <div role="tabpanel" class="tab-pane active" id="categorii">
 
                 <div class="col-sm-6">
                     <div class="panel panel-primary">
@@ -61,7 +61,7 @@ $field_options = get_option('wpcf-fields');
             </div>
 
 
-            <div role="tabpanel" class="tab-pane active" id="beneficiari">
+            <div role="tabpanel" class="tab-pane " id="beneficiari">
 
                 <div class="col-sm-6">
                     <div class="panel panel-primary">

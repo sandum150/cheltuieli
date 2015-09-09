@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="<?php echo get_template_directory_uri() . '/css/jquery-ui.css'?>">
     <script src="<?php echo get_template_directory_uri() . '/js/jquery-1.11.2.min.js'?>"></script>
     <script src="<?php echo get_template_directory_uri() . '/js/jquery-ui-1.11.2.custom/jquery-ui.min.js'?>"></script>
+    <script src="<?php echo get_template_directory_uri() . '/js/jquery.mobile.custom.min.js'?>"></script>
 
     <!--    bootsrap-->
     <link rel="stylesheet" href="<?php echo get_template_directory_uri() . '/bootstrap/css/bootstrap.min.css'?>">

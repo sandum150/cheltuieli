@@ -2,10 +2,6 @@
 
 /**
  *
- * $HeadURL: http://plugins.svn.wordpress.org/types/tags/1.6.5/embedded/common/toolset-forms/classes/class.field_factory.php $
- * $LastChangedDate: 2014-10-23 10:33:39 +0000 (Thu, 23 Oct 2014) $
- * $LastChangedRevision: 1012677 $
- * $LastChangedBy: iworks $
  *
  */
 
@@ -28,6 +24,17 @@ abstract class FieldFactory extends FieldAbstract
     {
         $cred_cred_settings = get_option( 'cred_cred_settings' );
         $this->_use_bootstrap = is_array($cred_cred_settings) && array_key_exists( 'use_bootstrap', $cred_cred_settings ) && $cred_cred_settings['use_bootstrap'];
+        $this->set_placeholder_as_attribute();
+    }
+
+    public function set_placeholder_as_attribute()
+    {
+        if ( !isset($this->_data['attribute']) ) {
+            $this->_data['attribute'] = array();
+        }
+        if ( isset($this->_data['placeholder']) && !empty($this->_data['placeholder'])) {
+            $this->_data['attribute']['placeholder'] = htmlentities(stripcslashes($this->_data['placeholder']));
+        }
     }
 
     public function set_metaform($metaform)
@@ -74,6 +81,12 @@ abstract class FieldFactory extends FieldAbstract
     {
         global $post;
         $value = $this->_value;
+        /**
+         * default value
+         */
+        if ( empty( $value ) && array_key_exists('user_default_value', $this->_data)) {
+            $value = stripcslashes($this->_data['user_default_value']);
+        }
         $value = apply_filters( 'wpcf_fields_value_get', $value, $post );
         if ( array_key_exists('slug', $this->_data ) ) {
             $value = apply_filters( 'wpcf_fields_slug_' . $this->_data['slug'] . '_value_get', $value, $post );
@@ -82,8 +95,11 @@ abstract class FieldFactory extends FieldAbstract
         return $value;
     }
 
-    public function getTitle()
+    public function getTitle($_title = false)
     {
+        if ( $_title && empty($this->_data['title']) && isset($this->_data['_title']) ) {
+            return $this->_data['_title'];
+        }
         return $this->_data['title'];
     }
 

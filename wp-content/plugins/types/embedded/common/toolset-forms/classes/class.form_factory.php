@@ -10,10 +10,6 @@ define( "CLASS_NAME_PREFIX", "WPToolset_Field_" );
  * Creation Form Class
  * @author onTheGo System
  *
- * $HeadURL: http://plugins.svn.wordpress.org/types/tags/1.6.5/embedded/common/toolset-forms/classes/class.form_factory.php $
- * $LastChangedDate: 2015-01-28 06:42:34 +0000 (Wed, 28 Jan 2015) $
- * $LastChangedRevision: 1077234 $
- * $LastChangedBy: iworks $
  *
  *
  */
@@ -37,8 +33,12 @@ class FormFactory extends FormAbstract
 
         wp_register_script( 'wptoolset-forms',
             WPTOOLSET_FORMS_RELPATH . '/js/main.js',
-            array('jquery', 'underscore'), WPTOOLSET_FORMS_VERSION, false );
+            array('jquery', 'underscore', 'suggest'), WPTOOLSET_FORMS_VERSION, true );
         wp_enqueue_script( 'wptoolset-forms' );
+		$wptoolset_forms_localization = array(
+			'ajaxurl' => admin_url( 'admin-ajax.php', null )
+		);
+		wp_localize_script( 'wptoolset-forms', 'wptoolset_forms_local', $wptoolset_forms_localization );
 
         if ( is_admin() ) {
             wp_register_style( 'wptoolset-forms-admin',
@@ -178,10 +178,35 @@ class FormFactory extends FormAbstract
          */
         $config['use_bootstrap'] = $this->theForm->form_settings['use_bootstrap'];
         $config['has_media_button'] = $this->theForm->form_settings['has_media_button'];
+
         /**
          * WMPL configuration
          */
         $config['wpml_action'] = $this->get_wpml_action($config['id']);
+
+        /**
+         * Change config options.
+         *
+         * This filter allow to chenge value of key 'options' for field config..
+         *
+         * @since 1.8.0
+         *
+         * @param array $options Array options for field.
+         * @param string $slug Field slug.
+         * @param string $type field type
+         */
+        if (
+            isset($config['type'])
+            && isset($config['slug'])
+            && isset($config['options'])
+        ) {
+            $config['options'] = apply_filters(
+                'wpcf_config_options_'.$config['type'],
+                $config['options'],
+                $config['slug'],
+                $config['type']
+            );
+        }
 
         $htmlArray = array();
         $_gnf = $global_name_field;
@@ -238,8 +263,10 @@ class FormFactory extends FormAbstract
                 if ( current_user_can('manage_options') ) {
                     $htmlArray[] = sprintf(
                         '<div id="message" class="error"><p>%s</p><p>%s</p></div>',
+                        //https://icanlocalize.basecamphq.com/projects/7393061-toolset/todo_items/196628627/comments#310360880
+                        //changed render to rendering
                         sprintf(
-                            __('There is a problem with render <strong>%s (%s)</strong> field.', 'wpv-views'),
+                            __('There is a problem rendering field <strong>%s (%s)</strong>.', 'wpv-views'),
                             $_cfg['title'],
                             $_cfg['type']
                         ),

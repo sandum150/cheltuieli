@@ -132,21 +132,33 @@ class WPToolset_Forms_Validation
      * @return \WP_Error|boolean
      * @throws Exception
      */
-    public function validateField( $field ) {        
-        $value = apply_filters( 'wptoolset_validation_value_' . $field->getType(),
-                $field->getValue() );
+    public function validateField( $field ) {
+        $value = apply_filters( 'wptoolset_validation_value_' . $field->getType(), $field->getValue() );
         $rules = $this->_parseRules( $field->getValidationData(), $value );
         // If not required but empty - skip
         if ( !isset( $rules['required'] )
                 && ( is_null( $value ) || $value === false || $value === '' ) ) {
             return true;
         }
-        
+
         try {
             $errors = array();
             foreach ( $rules as $rule => $args ) {
                 if ( !$this->validate( $rule, $args['args'] ) ) {
-                    $errors[] = $field->getTitle() .  ' ' . $args['message'];
+                    /**
+                     * Allow turn off field name.
+                     *
+                     * Allow turn off field name from error message.
+                     *
+                     * @since x.x.x
+                     *
+                     * @param boolean $var show field title in message, * default true.
+                     */
+                    if ( apply_filters('toolset_common_validation_add_field_name_to_error', true) ) {
+                        $errors[] = $field->getTitle() .  ' ' . $args['message'];
+                    } else {
+                        $errors[] = $args['message'];
+                    }
                 }
             }
             if ( !empty( $errors ) ) {
@@ -189,6 +201,11 @@ class WPToolset_Forms_Validation
     public function validate( $rule, $args ) {
         $validator = $this->_cake();
         $rule = $this->_map_rule_js_to_php( $rule );
+
+        if ( 'skype' == $rule ) {
+            return $validator->custom($args[0]['skypename'], '/^([a-zA-Z0-9\,\.\-\_]+)$/');
+        }
+
         if ( is_callable( array($validator, $rule) ) ) {
             return call_user_func_array( array($validator, $rule), $args );
         }
