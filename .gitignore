@@ -1,3 +1,4 @@
 /.idea/
-wp-config.php
+wp-config.*
+!wp-config-sample.php
 .htaccess
