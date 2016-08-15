@@ -1,5 +1,4 @@
 /.idea/
 test.php
-wp-config.*
-!wp-config-sample.php
+wp-config.php
 .htaccess
