@@ -22,7 +22,7 @@ define('DB_NAME', 'wpc2');
 define('DB_USER', 'root');
 
 /** MySQL database password */
-define('DB_PASSWORD', 'Sa72568339');
+define('DB_PASSWORD', '');
 
 /** MySQL hostname */
 define('DB_HOST', 'localhost');
